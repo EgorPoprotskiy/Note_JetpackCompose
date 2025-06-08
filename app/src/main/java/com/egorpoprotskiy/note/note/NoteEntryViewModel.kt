@@ -36,9 +36,8 @@ data class NoteDetails(
     val id: Int = 0,
     val heading: String = "",
     val description: String = "",
-    val color: String = "",
+    val color: String = ""
 )
-
 fun NoteDetails.toItem(): Note = Note(
     id = id,
     heading = heading,
