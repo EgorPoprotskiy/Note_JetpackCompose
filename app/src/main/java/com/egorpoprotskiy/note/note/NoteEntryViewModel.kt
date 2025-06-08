@@ -3,6 +3,7 @@ package com.egorpoprotskiy.note.note
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.egorpoprotskiy.note.data.Note
 import com.egorpoprotskiy.note.data.NoteRepository
@@ -36,9 +37,8 @@ data class NoteDetails(
     val id: Int = 0,
     val heading: String = "",
     val description: String = "",
-    val color: String = "",
+    val color: String = ""
 )
-
 fun NoteDetails.toItem(): Note = Note(
     id = id,
     heading = heading,

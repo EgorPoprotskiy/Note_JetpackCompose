@@ -34,14 +34,14 @@ import kotlinx.coroutines.launch
 import java.util.Currency
 import java.util.Locale
 
-object ItemEntryDestination : NavigationDestination {
+object NoteEntryDestination : NavigationDestination {
     override val route = "note_entry"
     override val titleRes = R.string.note_entry_title
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItemEntryScreen(
+fun NoteEntryScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
@@ -52,7 +52,7 @@ fun ItemEntryScreen(
     Scaffold(
         topBar = {
             NoteTopAppBar(
-                title = stringResource(ItemEntryDestination.titleRes),
+                title = stringResource(NoteEntryDestination.titleRes),
                 canNavigateBack = canNavigateBack,
                 navigateUp = onNavigateUp
             )

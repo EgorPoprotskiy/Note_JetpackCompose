@@ -17,10 +17,11 @@ import com.egorpoprotskiy.note.R.string
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.egorpoprotskiy.note.navigation.NoteNavHost
 
 @Composable
 fun NoteApp(navController: NavHostController = rememberNavController()) {
-
+    NoteNavHost(navController = navController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
