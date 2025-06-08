@@ -215,7 +215,7 @@ private fun NoteItem(
                 )
             }
             Text(
-                text = stringResource(R.string.in_stock, note.color),
+                text = note.color,
                 style = MaterialTheme.typography.titleMedium
             )
         }
