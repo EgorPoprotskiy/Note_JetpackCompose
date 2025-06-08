@@ -3,7 +3,6 @@ package com.egorpoprotskiy.note.note
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.egorpoprotskiy.note.data.Note
 import com.egorpoprotskiy.note.data.NoteRepository
