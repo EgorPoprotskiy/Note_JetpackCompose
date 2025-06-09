@@ -124,7 +124,7 @@ fun NoteInputForm(
         OutlinedTextField(
             value = itemDetails.heading,
             onValueChange = { onValueChange(itemDetails.copy(heading = it)) },
-            label = { Text(stringResource(R.string.item_name_req)) },
+            label = { Text(stringResource(R.string.name_note)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -138,13 +138,13 @@ fun NoteInputForm(
             value = itemDetails.description,
             onValueChange = { onValueChange(itemDetails.copy(description = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            label = { Text(stringResource(R.string.item_price_req)) },
+            label = { Text(stringResource(R.string.description_note)) },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
                 disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
-            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
+//            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
@@ -178,7 +178,7 @@ private fun ItemEntryScreenPreview() {
     NoteTheme {
         NoteEntryBody(itemUiState = NoteUiState(
             NoteDetails(
-                heading = "Item name", description = "10.00", color = "5"
+                heading = "Имя", description = "описание", color = "5"
             )
         ), onItemValueChange = {}, onSaveClick = {})
     }

@@ -2,6 +2,7 @@ package com.egorpoprotskiy.note.note
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,12 +10,15 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -34,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.egorpoprotskiy.note.AppViewModelProvider
@@ -42,10 +47,12 @@ import com.egorpoprotskiy.note.R
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.egorpoprotskiy.note.data.Note
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
 import kotlinx.coroutines.launch
@@ -75,18 +82,42 @@ fun NoteDetailsScreen(
                 navigateUp = navigateBack
             )
         }, floatingActionButton = {
-            FloatingActionButton(
-                onClick = {navigateToEditNote(uiState.value.noteDetails.id)},
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(
-                    end = WindowInsets.safeDrawing.asPaddingValues()
-                        .calculateEndPadding(LocalLayoutDirection.current)
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.edit_note_title)
-                )
+            Row {
+                //Кнопка-иконка для удаления.
+//                FloatingActionButton(
+//                    onClick = {
+//                        coroutineScope.launch {
+//                            viewModel.deleteNote()
+//                            navigateBack()
+//                        }
+//                    },
+//                    shape = androidx.compose.material.MaterialTheme.shapes.medium,
+//                    modifier = Modifier.padding(
+//                        start = WindowInsets.safeDrawing.asPaddingValues()
+//                            .calculateEndPadding(LocalLayoutDirection.current)
+//                    )
+//                ) {
+//                    Icon(
+//                        imageVector = Icons.Default.Delete,
+//                        contentDescription = stringResource(R.string.delete)
+//                    )
+//                }
+
+                FloatingActionButton(
+                    onClick = { navigateToEditNote(uiState.value.noteDetails.id) },
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier.padding(
+                        end = WindowInsets.safeDrawing.asPaddingValues()
+                            .calculateEndPadding(LocalLayoutDirection.current)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = stringResource(R.string.edit_note_title)
+                    )
+                }
+
+
             }
         }, modifier = modifier
     ) { innerPadding ->
@@ -115,15 +146,18 @@ private fun NoteDetailsBody(
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
-    ) {
+
         var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
-        NoteDetails(
-            note = noteDetailsUiState.noteDetails.toItem(),
-            modifier = Modifier.fillMaxWidth()
-        )
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+        ) {
+            NoteDetails(
+                note = noteDetailsUiState.noteDetails.toItem(),
+                modifier = Modifier.fillMaxWidth()
+            )
 //        Button(
 //            onClick = onSellItem,
 //            modifier = Modifier.fillMaxWidth(),
@@ -137,7 +171,8 @@ private fun NoteDetailsBody(
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
             shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
             Text(stringResource(R.string.delete))
         }
@@ -174,37 +209,43 @@ fun NoteDetails(
             )
         ) {
             NoteDetailsRow(
-                labelResID = R.string.item,
+//                labelResID = R.string.item,
                 noteDetail = note.heading,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
+            Divider(
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                thickness = 1.dp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
             NoteDetailsRow(
-                labelResID = R.string.quantity_in_stock,
+//                labelResID = R.string.quantity_in_stock,
                 noteDetail = note.description,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
-            NoteDetailsRow(
-                labelResID = R.string.price,
-                noteDetail = note.color,
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.padding_medium)
-                )
-            )
+//            Отображает количество
+//            NoteDetailsRow(
+////                labelResID = R.string.price,
+//                noteDetail = note.color,
+//                modifier = Modifier.padding(
+//                    horizontal = dimensionResource(id = R.dimen.padding_medium)
+//                )
+//            )
         }
     }
 }
 
 @Composable
 private fun NoteDetailsRow(
-    @StringRes labelResID: Int, noteDetail: String, modifier: Modifier = Modifier
+    noteDetail: String, modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier) {
-        Text(stringResource(labelResID))
-        Spacer(modifier = Modifier.weight(1f))
+//        Text(stringResource(labelResID))
+//        Spacer(modifier = Modifier.weight(1f))
         Text(text = noteDetail, fontWeight = FontWeight.Bold)
     }
 }
@@ -233,7 +274,7 @@ private fun DeleteConfirmationDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun ItemDetailsScreenPreview() {
+fun NoteDetailsBodyPreview() {
     NoteTheme {
         NoteDetailsBody(
             NoteDetailsUiState(
@@ -242,6 +283,17 @@ fun ItemDetailsScreenPreview() {
             ),
 //            onSellItem = {},
             onDelete = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NoteDetailsScreenPreview() {
+    NoteTheme {
+        NoteDetailsScreen(
+            navigateToEditNote = {},
+            navigateBack = {},
         )
     }
 }
