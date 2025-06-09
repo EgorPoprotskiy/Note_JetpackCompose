@@ -1,5 +1,9 @@
 package com.egorpoprotskiy.note.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,9 +51,15 @@ import com.egorpoprotskiy.note.R
 import com.egorpoprotskiy.note.data.Note
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.time.delay
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -145,16 +155,38 @@ private fun NoteList(
         contentPadding = contentPadding
     ) {
         items(items = noteList, key = { it.id }) { item ->
+            var visible by remember { mutableStateOf(true) }
+            //9 Защита от повторного свайпа при настройках анимации.
+            val alreadyDismissed = remember { mutableStateOf(false) }
             val dismissState = rememberDismissState(
                 confirmStateChange = { dismissValue ->
-                    if (dismissValue == DismissValue.DismissedToStart ||
+                    if (!alreadyDismissed.value &&
+                        dismissValue == DismissValue.DismissedToStart ||
                         dismissValue == DismissValue.DismissedToEnd
                     ) {
-                        onSwipeDelete(item)
-                        true
-                    } else false
+                        alreadyDismissed.value = true
+
+                        visible = false // запускаем анимацию исчезновения
+//                        onSwipeDelete(item)
+                        false // НЕ удаляем сразу — ждём завершения анимации
+                    } else {
+                        false
+                    }
                 }
             )
+            // Анимация исчезновения элемента списка
+            AnimatedVisibility(
+                visible = visible,
+                exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
+            ) {
+                // Когда элемент стал невидимым — вызываем удаление
+                LaunchedEffect(visible) {
+                    if (!visible) {
+                        delay(300) // дождаться завершения анимации
+                        onSwipeDelete(item) //вызывается после анимации.
+                    }
+                }
+
             SwipeToDismiss(
                 state = dismissState,
                 directions = setOf(
@@ -163,13 +195,24 @@ private fun NoteList(
                 ),
                 background = {
                     val direction = dismissState.dismissDirection
-                    val color = if (direction != null) Color.Gray else Color.Transparent
+                    // Цвет фона для свайпа.
+                    val color = when (direction) {
+                        DismissDirection.StartToEnd -> Color.Red
+                        DismissDirection.EndToStart -> Color.Red
+                        null -> Color.Transparent
+                    }
+                    //Чтобы иконка удаления элемента была с обеих сторон во время свайпа.
+                    val alignment = when (dismissState.dismissDirection) {
+                        DismissDirection.StartToEnd -> Alignment.CenterStart
+                        DismissDirection.EndToStart -> Alignment.CenterEnd
+                        null -> Alignment.CenterEnd
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(color)
                             .padding(horizontal = 20.dp),
-                        contentAlignment = Alignment.CenterEnd
+                        contentAlignment = alignment
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
@@ -187,7 +230,7 @@ private fun NoteList(
                     )
                 }
             )
-        }
+        }}
     }
 }
 
