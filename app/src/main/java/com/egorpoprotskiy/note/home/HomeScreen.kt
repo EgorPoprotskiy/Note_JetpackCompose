@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.DismissValue
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
@@ -50,10 +51,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
 
-object HomeDestination: NavigationDestination {
+object HomeDestination : NavigationDestination {
     override val route = "home"
     override val titleRes = R.string.app_name
 }
+
 //4.1
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +93,7 @@ fun HomeScreen(
         HomeBody(
             noteList = homeUiState.noteList,
             onNoteClick = navigateToNoteUpdate,
-            onSwipeDelete = {note -> viewModel.deleteNote(note)},
+            onSwipeDelete = { note -> viewModel.deleteNote(note) },
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding
         )
@@ -120,7 +122,7 @@ private fun HomeBody(
         } else {
             NoteList(
                 noteList = noteList,
-                onNoteClick = { onNoteClick(it.id)},
+                onNoteClick = { onNoteClick(it.id) },
                 onSwipeDelete = onSwipeDelete,
                 contentPadding = contentPadding,
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small))
@@ -147,7 +149,7 @@ private fun NoteList(
                 confirmStateChange = { dismissValue ->
                     if (dismissValue == DismissValue.DismissedToStart ||
                         dismissValue == DismissValue.DismissedToEnd
-                        ) {
+                    ) {
                         onSwipeDelete(item)
                         true
                     } else false
@@ -157,7 +159,8 @@ private fun NoteList(
                 state = dismissState,
                 directions = setOf(
                     DismissDirection.StartToEnd,
-                    DismissDirection.EndToStart),
+                    DismissDirection.EndToStart
+                ),
                 background = {
                     val direction = dismissState.dismissDirection
                     val color = if (direction != null) Color.Gray else Color.Transparent
@@ -195,25 +198,32 @@ private fun NoteItem(
 ) {
     Card(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
     ) {
         Column(
-            modifier = modifier.padding(dimensionResource(id = R.dimen.padding_large)),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_large)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = note.heading,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(Modifier.weight(1f))
-                Text(
-                    text = note.description,
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
+//            Column(
+//                modifier = Modifier.fillMaxSize()
+//            ) {
+            Text(
+                text = note.heading,
+                style = MaterialTheme.typography.titleLarge
+            )
+//            Spacer(Modifier.weight(1f))
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Text(
+                text = note.description,
+                style = MaterialTheme.typography.titleMedium
+            )
+//            }
             Text(
                 text = note.color,
                 style = MaterialTheme.typography.titleMedium
@@ -228,8 +238,10 @@ fun HomeBodyPreview() {
     NoteTheme {
         HomeBody(
             listOf(
-                Note(1, "Game", "100.0", "20"), Note(2, "Pen", "200.0", "30"), Note(3, "TV", "300.0", "50")
-        ), onNoteClick = {}, onSwipeDelete = {})
+                Note(1, "Game", "100.0", "20"),
+                Note(2, "Pen", "200.0", "30"),
+                Note(3, "TV", "300.0", "50")
+            ), onNoteClick = {}, onSwipeDelete = {})
     }
 }
 

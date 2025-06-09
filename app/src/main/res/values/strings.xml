@@ -1,18 +1,18 @@
 <resources>
     <string name="app_name">Note</string>
 
-    <string name="note_entry_title">Add Item</string>
-    <string name="edit_note_title">Edit Item</string>
+    <string name="note_entry_title">Add note</string>
+    <string name="edit_note_title">Edit note</string>
 
     <string name="attention">Attention</string>
     <string name="back_button">Back</string>
     <string name="delete">Delete</string>
     <string name="delete_question">Are you sure you want to delete?</string>
-    <string name="no_note_description">Oops!\nNo items in the notes.\nTap + to add.</string>
+    <string name="no_note_description">You have no notes.\nClick + to add.</string>
     <string name="item">Item</string>
-    <string name="item_detail_title">Item Details</string>
-    <string name="item_name_req">Item Name*</string>
-    <string name="item_price_req">Item Price*</string>
+    <string name="item_detail_title">Details of notes</string>
+    <string name="name_note">Name</string>
+    <string name="description_note">Content</string>
     <string name="no">No</string>
     <string name="price">Price</string>
     <string name="quantity_in_stock">Quantity in stock</string>
