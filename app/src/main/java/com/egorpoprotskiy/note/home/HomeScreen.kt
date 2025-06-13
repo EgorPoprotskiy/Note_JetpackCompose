@@ -313,7 +313,9 @@ private fun NoteItem(
                 text = note.heading,
                 style = MaterialTheme.typography.titleLarge,
                 //автоматически подбирает цвет текста (чёрный или белый) для хорошей читаемости на фоне карточки.
-                color = contentColorFor(cardColor)
+                color = contentColorFor(cardColor),
+                //максимальное количество строк для заголовка.
+                maxLines = 1
             )
             //Разделитель
             Divider(
@@ -325,7 +327,9 @@ private fun NoteItem(
             Text(
                 text = note.description,
                 style = MaterialTheme.typography.titleMedium,
-                color = contentColorFor(cardColor)
+                color = contentColorFor(cardColor),
+                //максимальное количество строк для описания.
+                maxLines = 3
             )
         }
     }

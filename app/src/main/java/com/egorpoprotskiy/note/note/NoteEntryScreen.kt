@@ -44,6 +44,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.egorpoprotskiy.note.AppViewModelProvider
 import com.egorpoprotskiy.note.NoteTopAppBar
 import com.egorpoprotskiy.note.R
+import com.egorpoprotskiy.note.data.Note
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
 import kotlinx.coroutines.launch
@@ -109,7 +110,7 @@ fun NoteEntryBody(
         NoteInputForm(
             itemDetails = itemUiState.itemDetails,
             onValueChange = onItemValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         //Кнопка сохранить
         Button(
@@ -142,15 +143,22 @@ fun NoteInputForm(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
+        val maxChars = 30
         OutlinedTextField(
             value = itemDetails.heading,
-            onValueChange = { onValueChange(itemDetails.copy(heading = it)) },
+            //Позволяет ввести в заголовок не более 30 символов.
+            onValueChange = {
+                if (it.length <= maxChars) {
+                onValueChange(itemDetails.copy(heading = it))
+                }
+                            },
             label = { Text(stringResource(R.string.name_note)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
+            //Цвет поля ввода в зависимости от фокуса.
+//            colors = OutlinedTextFieldDefaults.colors(
+//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//            ),
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
@@ -160,33 +168,20 @@ fun NoteInputForm(
             onValueChange = { onValueChange(itemDetails.copy(description = it)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             label = { Text(stringResource(R.string.description_note)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-//            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-//        OutlinedTextField(
-//            value = itemDetails.color,
-//            onValueChange = { onValueChange(itemDetails.copy(color = it)) },
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//            label = { Text(stringResource(R.string.quantity_req)) },
+            //Цвет поля ввода в зависимости от фокуса.
 //            colors = OutlinedTextFieldDefaults.colors(
 //                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
 //                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
 //                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
 //            ),
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
+
+//            leadingIcon = { Text(Currency.getInstance(Locale.getDefault()).symbol) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            //Запись в одну строку.
 //            singleLine = true
-//        )
-//        Text(
-//            text = "Выбери цвет: ",
-//        )
+            maxLines = 10 // или любое нужное число строк
+        )
 
         Spacer(modifier = Modifier.weight(1f)) //толкает все поля вниз.
         Row(
