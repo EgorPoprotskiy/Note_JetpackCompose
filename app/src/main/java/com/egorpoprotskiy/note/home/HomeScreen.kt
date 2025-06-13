@@ -245,6 +245,7 @@ private fun NoteItem(
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        //назначение вцета для карточки, на основе выбранного цвета.
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(
