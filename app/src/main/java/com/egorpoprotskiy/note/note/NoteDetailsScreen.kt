@@ -1,5 +1,6 @@
 package com.egorpoprotskiy.note.note
 
+import android.graphics.Color
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -43,6 +45,7 @@ import com.egorpoprotskiy.note.R
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -185,14 +188,13 @@ private fun NoteDetailsBody(
 
 @Composable
 fun NoteDetails(
-    note: Note, modifier: Modifier = Modifier
+    note: Note,
+    modifier: Modifier = Modifier
 ) {
+    val cardColor = colorResource(id = note.color)
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(
             modifier = Modifier
@@ -203,8 +205,8 @@ fun NoteDetails(
             )
         ) {
             NoteDetailsRow(
-//                labelResID = R.string.item,
                 noteDetail = note.heading,
+                backgroundColor = contentColorFor(cardColor),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -215,32 +217,31 @@ fun NoteDetails(
                 modifier = Modifier.padding(vertical = 8.dp)
             )
             NoteDetailsRow(
-//                labelResID = R.string.quantity_in_stock,
                 noteDetail = note.description,
+                backgroundColor = contentColorFor(cardColor),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
-//            Отображает количество
-//            NoteDetailsRow(
-////                labelResID = R.string.price,
-//                noteDetail = note.color,
-//                modifier = Modifier.padding(
-//                    horizontal = dimensionResource(id = R.dimen.padding_medium)
-//                )
-//            )
         }
     }
 }
 
 @Composable
 private fun NoteDetailsRow(
-    noteDetail: String, modifier: Modifier = Modifier
+    noteDetail: String,
+    backgroundColor: androidx.compose.ui.graphics.Color,
+    modifier: Modifier = Modifier
 ) {
+    val textColor = contentColorFor(backgroundColor)
     Row(modifier = modifier) {
 //        Text(stringResource(labelResID))
 //        Spacer(modifier = Modifier.weight(1f))
-        Text(text = noteDetail, fontWeight = FontWeight.Bold)
+        Text(
+            text = noteDetail,
+            color = textColor,
+            fontWeight = FontWeight.Bold,
+        )
     }
 }
 
