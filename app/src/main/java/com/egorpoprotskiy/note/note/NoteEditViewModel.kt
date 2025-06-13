@@ -26,9 +26,14 @@ class NoteEditViewModel(
     private val noteId: Int = checkNotNull(savedStateHandle[NoteEditDestination.noteIdArg])
 
     private fun validateInput(uiState: NoteDetails = noteUiState.itemDetails): Boolean {
-        return with(uiState) {
-            heading.isNotBlank() && description.isNotBlank() && color.isNotBlank()
-        }
+        // проверка на заполнение поля heading.
+        return uiState.heading.isNotBlank()
+            // проверка на заполнение всех полей.
+//        with(uiState) {
+//            heading.isNotBlank()
+//                    && description.isNotBlank()
+//                    && color.toString().isNotBlank()
+//        }
     }
     //12.3 извлеките сведения о сущности с помощью itemsRepository.getItemStream(itemId) -> AppViewModelProvider
     init {
@@ -41,7 +46,10 @@ class NoteEditViewModel(
     }
     //12.5 Эта функция обновляет itemUiStateновыми значениями, которые вводит пользователь. -> ItemEditScreen
     fun updateUiState(itemDetails: NoteDetails) {
-        noteUiState = NoteUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
+        noteUiState = NoteUiState(
+            itemDetails = itemDetails,
+            isEntryValid = validateInput(itemDetails)
+        )
     }
     //12.7 -> ItemEditScreen
     suspend fun updateItem() {

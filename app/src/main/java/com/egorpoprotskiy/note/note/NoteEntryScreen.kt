@@ -1,12 +1,19 @@
 package com.egorpoprotskiy.note.note
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -19,11 +26,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.egorpoprotskiy.note.AppViewModelProvider
 import com.egorpoprotskiy.note.NoteTopAppBar
@@ -31,8 +42,6 @@ import com.egorpoprotskiy.note.R
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
 import kotlinx.coroutines.launch
-import java.util.Currency
-import java.util.Locale
 
 object NoteEntryDestination : NavigationDestination {
     override val route = "note_entry"
@@ -117,6 +126,13 @@ fun NoteInputForm(
     onValueChange: (NoteDetails) -> Unit = {},
     enabled: Boolean = true
 ) {
+    val colorResList = listOf(
+        R.color.orange,
+        R.color.blue,
+        R.color.green,
+        R.color.pink,
+        R.color.white
+    )
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
@@ -149,20 +165,45 @@ fun NoteInputForm(
             enabled = enabled,
             singleLine = true
         )
-        OutlinedTextField(
-            value = itemDetails.color,
-            onValueChange = { onValueChange(itemDetails.copy(color = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(stringResource(R.string.quantity_req)) },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
+//        OutlinedTextField(
+//            value = itemDetails.color,
+//            onValueChange = { onValueChange(itemDetails.copy(color = it)) },
+//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//            label = { Text(stringResource(R.string.quantity_req)) },
+//            colors = OutlinedTextFieldDefaults.colors(
+//                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+//            ),
+//            modifier = Modifier.fillMaxWidth(),
+//            enabled = enabled,
+//            singleLine = true
+//        )
+        Text(
+            text = "Выбери цвет: ",
         )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            colorResList.forEach { colorResId ->
+                val color = colorResource(id = colorResId)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(color)
+                        .border(
+                            width = if (itemDetails.color == colorResId) 3.dp else 1.dp,
+                            color = if (itemDetails.color == colorResId) Color.Black else Color.Gray,
+                            shape = CircleShape
+                        )
+                        .clickable(enabled = enabled) {
+                            onValueChange(itemDetails.copy(color = colorResId))
+                        }
+                )
+            }
+        }
+
         if (enabled) {
             Text(
                 text = stringResource(R.string.required_fields),
@@ -178,7 +219,7 @@ private fun ItemEntryScreenPreview() {
     NoteTheme {
         NoteEntryBody(itemUiState = NoteUiState(
             NoteDetails(
-                heading = "Имя", description = "описание", color = "5"
+                heading = "Имя", description = "описание", color = 5
             )
         ), onItemValueChange = {}, onSaveClick = {})
     }

@@ -19,7 +19,7 @@ class NoteDetailsViewModel(
         noteRepository.getNoteStream(noteId)
             .filterNotNull()
             .map {
-                NoteDetailsUiState(outOfStock = it.color <= "0", noteDetails = it.toNoteDetails())
+                NoteDetailsUiState(outOfStock = it.color <= 0, noteDetails = it.toNoteDetails())
             }.stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
