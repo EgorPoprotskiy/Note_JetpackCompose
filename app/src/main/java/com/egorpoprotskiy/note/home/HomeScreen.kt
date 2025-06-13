@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +19,7 @@ import androidx.compose.material.DismissValue
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.contentColorFor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -55,11 +53,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.time.delay
 
 object HomeDestination : NavigationDestination {
     override val route = "home"
@@ -174,7 +173,7 @@ private fun NoteList(
                     }
                 }
             )
-            // Анимация исчезновения элемента списка
+            // Анимация исчезновения элемента спи"ска
             AnimatedVisibility(
                 visible = visible,
                 exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
@@ -224,6 +223,7 @@ private fun NoteList(
                 dismissContent = {
                     NoteItem(
                         note = item,
+//                        onColorSelected = {},
                         modifier = Modifier
                             .padding(dimensionResource(id = R.dimen.padding_small))
                             .clickable { onNoteClick(item) }
@@ -237,11 +237,15 @@ private fun NoteList(
 @Composable
 private fun NoteItem(
     note: Note,
+//    onColorSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+//    val availableColors = listOf("orange", "blue", "green", "pink", "White")
+    val cardColor = colorResource(id = note.color)
     Card(
         modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(
             modifier = modifier
@@ -252,27 +256,75 @@ private fun NoteItem(
 //            Column(
 //                modifier = Modifier.fillMaxSize()
 //            ) {
+            //Строка с заголовком
             Text(
                 text = note.heading,
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                //автоматически подбирает цвет текста (чёрный или белый) для хорошей читаемости на фоне карточки.
+                color = contentColorFor(cardColor)
             )
 //            Spacer(Modifier.weight(1f))
+            //Разделитель
             Divider(
                 color = Color.Gray,
                 thickness = 1.dp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
+                //Строка с описанием
             Text(
                 text = note.description,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = contentColorFor(cardColor)
             )
 //            }
-            Text(
-                text = note.color,
-                style = MaterialTheme.typography.titleMedium
-            )
+            //Строка с ценой
+//            Text(
+//                text = note.color,
+//                style = MaterialTheme.typography.titleMedium
+//            )
+
+            //Выбор цвета на главном экране(неправильный функционал))
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Text(
+//                text = "Выберите цвет:",
+//                style = MaterialTheme.typography.labelMedium
+//            )
+//            Row(
+//                horizontalArrangement = Arrangement.spacedBy(12.dp),
+//                modifier = Modifier.padding(top = 8.dp)
+//            ) {
+//                availableColors.forEach { colorName ->
+//                    val color = colorFromName(colorName)
+//                    Box(
+//                        modifier = Modifier
+//                            .size(36.dp)
+//                            .clip(CircleShape)
+//                            .background(color)
+//                            .border(
+//                                width = if (note.color == colorName) 3.dp else 1.dp,
+//                                color = if (note.color == colorName) Color.Black else Color.Gray,
+//                                shape = CircleShape
+//                            )
+//                            .clickable {onColorSelected(colorName)}
+//                    )
+//                }
+//            }
         }
     }
+}
+
+//10 Функция получения цвета из ресурса.
+@Composable
+fun colorFromName(colorname: String): Color {
+    val context = LocalContext.current
+    val colorResId = when (colorname) {
+        "orange" -> R.color.orange
+        "blue" -> R.color.blue
+        "green" -> R.color.green
+        "pink" -> R.color.pink
+        else -> R.color.defaultColor // Цвет по умолчанию
+    }
+    return colorResource(id = colorResId)
 }
 
 @Preview(showBackground = true)
@@ -281,9 +333,9 @@ fun HomeBodyPreview() {
     NoteTheme {
         HomeBody(
             listOf(
-                Note(1, "Game", "100.0", "20"),
-                Note(2, "Pen", "200.0", "30"),
-                Note(3, "TV", "300.0", "50")
+                Note(1, "Game", "100.0", 20),
+                Note(2, "Pen", "200.0", 30),
+                Note(3, "TV", "300.0", 50)
             ), onNoteClick = {}, onSwipeDelete = {})
     }
 }
@@ -301,7 +353,8 @@ fun HomeBodyEmptyListPreview() {
 fun NoteItemPreview() {
     NoteTheme {
         NoteItem(
-            Note(1, "Game", "100.0", "20"),
+            Note(1, "Game", "100.0", 20),
+//            onColorSelected = {}
         )
     }
 }

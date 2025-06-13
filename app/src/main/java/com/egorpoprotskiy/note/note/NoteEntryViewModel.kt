@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.egorpoprotskiy.note.data.Note
 import com.egorpoprotskiy.note.data.NoteRepository
+import com.egorpoprotskiy.note.R
 
 class NoteEntryViewModel(private val noteRepository: NoteRepository): ViewModel() {
     var noteUiState by mutableStateOf(NoteUiState())
@@ -13,13 +14,19 @@ class NoteEntryViewModel(private val noteRepository: NoteRepository): ViewModel(
 
     fun updateUiState(itemDetails: NoteDetails) {
         noteUiState =
-            NoteUiState(itemDetails = itemDetails, isEntryValid = validateInput(itemDetails))
+            NoteUiState(
+                itemDetails = itemDetails,
+                isEntryValid = validateInput(itemDetails)
+            )
     }
 
     private fun validateInput(uiState: NoteDetails = noteUiState.itemDetails): Boolean {
-        return with(uiState) {
-            heading.isNotBlank() && description.isNotBlank() && color.isNotBlank()
-        }
+        // проверка на заполнение поля heading.
+        return uiState.heading.isNotBlank()
+        // проверка на заполнение всех полей.
+//        with(uiState) {
+//            heading.isNotBlank() && description.isNotBlank() && color.toString().isNotBlank()
+//        }
     }
     suspend fun saveItem() {
         if (validateInput()) {
@@ -36,7 +43,7 @@ data class NoteDetails(
     val id: Int = 0,
     val heading: String = "",
     val description: String = "",
-    val color: String = ""
+    val color: Int = R.color.white
 )
 fun NoteDetails.toItem(): Note = Note(
     id = id,
