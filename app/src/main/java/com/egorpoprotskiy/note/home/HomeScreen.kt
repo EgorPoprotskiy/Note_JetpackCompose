@@ -2,6 +2,8 @@ package com.egorpoprotskiy.note.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
@@ -173,9 +175,12 @@ private fun NoteList(
                     }
                 }
             )
-            // Анимация исчезновения элемента спи"ска
+            // Анимация элемента списка
             AnimatedVisibility(
                 visible = visible,
+                //плавное появление элемента списка.
+                enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
+                //плавное исчезновение элемента списка.
                 exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
             ) {
                 // Когда элемент стал невидимым — вызываем удаление
@@ -186,51 +191,52 @@ private fun NoteList(
                     }
                 }
 
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(
-                    DismissDirection.StartToEnd,
-                    DismissDirection.EndToStart
-                ),
-                background = {
-                    val direction = dismissState.dismissDirection
-                    // Цвет фона для свайпа.
-                    val color = when (direction) {
-                        DismissDirection.StartToEnd -> Color.Red
-                        DismissDirection.EndToStart -> Color.Red
-                        null -> Color.Transparent
-                    }
-                    //Чтобы иконка удаления элемента была с обеих сторон во время свайпа.
-                    val alignment = when (dismissState.dismissDirection) {
-                        DismissDirection.StartToEnd -> Alignment.CenterStart
-                        DismissDirection.EndToStart -> Alignment.CenterEnd
-                        null -> Alignment.CenterEnd
-                    }
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color)
-                            .padding(horizontal = 20.dp),
-                        contentAlignment = alignment
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Удалить",
-                            tint = Color.White
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(
+                        DismissDirection.StartToEnd,
+                        DismissDirection.EndToStart
+                    ),
+                    background = {
+                        val direction = dismissState.dismissDirection
+                        // Цвет фона для свайпа.
+                        val color = when (direction) {
+                            DismissDirection.StartToEnd -> Color.Red
+                            DismissDirection.EndToStart -> Color.Red
+                            null -> Color.Transparent
+                        }
+                        //Чтобы иконка удаления элемента была с обеих сторон во время свайпа.
+                        val alignment = when (dismissState.dismissDirection) {
+                            DismissDirection.StartToEnd -> Alignment.CenterStart
+                            DismissDirection.EndToStart -> Alignment.CenterEnd
+                            null -> Alignment.CenterEnd
+                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(color)
+                                .padding(horizontal = 20.dp),
+                            contentAlignment = alignment
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Удалить",
+                                tint = Color.White
+                            )
+                        }
+                    },
+                    dismissContent = {
+                        NoteItem(
+                            note = item,
+//                        onColorSelected = {},
+                            modifier = Modifier
+                                .padding(dimensionResource(id = R.dimen.padding_small))
+                                .clickable { onNoteClick(item) }
                         )
                     }
-                },
-                dismissContent = {
-                    NoteItem(
-                        note = item,
-//                        onColorSelected = {},
-                        modifier = Modifier
-                            .padding(dimensionResource(id = R.dimen.padding_small))
-                            .clickable { onNoteClick(item) }
-                    )
-                }
-            )
-        }}
+                )
+            }
+        }
     }
 }
 
@@ -271,7 +277,7 @@ private fun NoteItem(
                 thickness = 1.dp,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-                //Строка с описанием
+            //Строка с описанием
             Text(
                 text = note.description,
                 style = MaterialTheme.typography.titleMedium,
