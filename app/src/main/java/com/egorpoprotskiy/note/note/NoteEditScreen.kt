@@ -31,52 +31,51 @@ object NoteEditDestination : NavigationDestination {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteEditScreen (
+fun NoteEditScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NoteEditViewModel = viewModel(factory = AppViewModelProvider.factory)
-    ) {
-        //12.8 Создайте val с именем coroutineScopeи установите его в rememberCoroutineScope().
-        val coroutineScope = rememberCoroutineScope()
-        Scaffold(
-            topBar = {
-                NoteTopAppBar(
-                    title = stringResource(NoteEditDestination.titleRes),
-                    canNavigateBack = true,
-                    navigateUp = onNavigateUp
-                )
-            },
-            modifier = modifier
-        ) { innerPadding ->
-            NoteEntryBody(
-                itemUiState = viewModel.noteUiState,
-                //12.6 Установите onItemValueChange значение аргумента. -> ItemEditViewModel
-                onItemValueChange = viewModel::updateUiState,
-                //12.9 обновите onSaveClickаргумент функции, чтобы запустить сопрограмму в coroutineScope.
-                onSaveClick = {
-                    coroutineScope.launch {
-                        viewModel.updateItem()
-                        navigateBack()
-                    }
-                },
-                modifier = Modifier
-                    .padding(
-                        start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
-                        end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
-                        top = innerPadding.calculateTopPadding()
-                    )
-                    .verticalScroll(rememberScrollState())
+) {
+    //12.8 Создайте val с именем coroutineScopeи установите его в rememberCoroutineScope().
+    val coroutineScope = rememberCoroutineScope()
+    Scaffold(
+        topBar = {
+            NoteTopAppBar(
+                title = stringResource(NoteEditDestination.titleRes),
+                canNavigateBack = true,
+                navigateUp = onNavigateUp
             )
-        }
+        },
+        modifier = modifier
+    ) { innerPadding ->
+        NoteEntryBody(
+            itemUiState = viewModel.noteUiState,
+            //12.6 Установите onItemValueChange значение аргумента. -> ItemEditViewModel
+            onItemValueChange = viewModel::updateUiState,
+            //12.9 обновите onSaveClickаргумент функции, чтобы запустить сопрограмму в coroutineScope.
+            onSaveClick = {
+                coroutineScope.launch {
+                    viewModel.updateItem()
+                    navigateBack()
+                }
+            },
+            modifier = Modifier
+                .padding(
+                    start = innerPadding.calculateStartPadding(LocalLayoutDirection.current),
+                    end = innerPadding.calculateEndPadding(LocalLayoutDirection.current),
+                    top = innerPadding.calculateTopPadding()
+                )
+                .verticalScroll(rememberScrollState())
+        )
     }
+}
 
 
-
-    @Preview(showBackground = true)
-    @Composable
-    fun NoteEditScreenPreview() {
-        NoteTheme {
-            NoteEditScreen(navigateBack = { /*Do nothing*/ }, onNavigateUp = { /*Do nothing*/ })
-        }
+@Preview(showBackground = true)
+@Composable
+fun NoteEditScreenPreview() {
+    NoteTheme {
+        NoteEditScreen(navigateBack = { /*Do nothing*/ }, onNavigateUp = { /*Do nothing*/ })
     }
+}

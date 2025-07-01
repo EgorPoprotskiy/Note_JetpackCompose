@@ -64,6 +64,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.egorpoprotskiy.note.navigation.NavigationDestination
 import com.egorpoprotskiy.note.ui.theme.NoteTheme
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -83,6 +84,7 @@ fun HomeScreen(
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -109,7 +111,12 @@ fun HomeScreen(
         HomeBody(
             noteList = homeUiState.noteList,
             onNoteClick = navigateToNoteUpdate,
-            onSwipeDelete = { note -> viewModel.deleteNote(note) },
+//            onSwipeDelete = { note -> viewModel.deleteNote(note) },
+            onSwipeDelete = { note ->
+                coroutineScope.launch {
+                    viewModel.deleteNote(note)
+                }
+            },
             modifier = modifier.fillMaxSize(),
             contentPadding = innerPadding
         )

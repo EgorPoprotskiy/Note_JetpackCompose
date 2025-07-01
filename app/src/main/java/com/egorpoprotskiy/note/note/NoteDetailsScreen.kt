@@ -78,7 +78,8 @@ fun NoteDetailsScreen(
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
-        }, floatingActionButton = {
+        },
+        floatingActionButton = {
             Row {
                 //Кнопка-иконка для удаления.
 //                FloatingActionButton(
